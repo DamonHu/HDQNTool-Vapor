@@ -11,6 +11,7 @@ import Crypto
 public final class Res_QNDataConfig: Content {
     var token = ""      //上传的token
     var fileKey = ""   //上传的文件名字
+    public init() {}
 }
 
 public class HDQNTool {
