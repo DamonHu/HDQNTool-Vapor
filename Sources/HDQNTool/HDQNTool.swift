@@ -9,8 +9,8 @@ import Vapor
 import Crypto
 
 public final class Res_QNDataConfig: Content {
-    var token = ""      //上传的token
-    var fileKey = ""   //上传的文件名字
+    public var token = ""      //上传的token
+    public var fileKey = ""   //上传的文件名字
     public init() {}
 }
 
