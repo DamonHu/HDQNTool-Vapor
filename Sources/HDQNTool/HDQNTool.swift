@@ -50,26 +50,26 @@ public class HDQNTool {
     }
     
     @discardableResult
-    public func deleteFile(_ req: Request, bucket: String, fileName: String) throws -> Future<Int> {
+    public func deleteFile(_ req: Request, bucket: String, fileName: String) throws -> Future<UInt> {
         let entry = "\(bucket):\(fileName)"
         let entryData = entry.data(using: String.Encoding.utf8) ?? Data()
         
         let encodedEntryURI = entryData.base64EncodedString().replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
         //发送删除请求
         let url = "http://rs.qbox.me/delete/" + encodedEntryURI
-        let authorization = self.p_getAuthorization(urlString: "delete/" + encodedEntryURI)
+        let authorization = try self.p_getAuthorization(urlString: "/delete/" + encodedEntryURI + "\n")
         
         let client = try req.make(Client.self)
-        let request = Request(http: HTTPRequest(method: HTTPMethod.POST, url: URL(string: url)!, headers: HTTPHeaders([("Authorization" , "QBox " + authorization), ("Content-Type", "application/x-www-form-urlencoded")]), body: nil), using: req)
-        return client.send(request).map { (response) -> HTTPResponse in
+        let request = Request(http: HTTPRequest(method: HTTPMethod.POST, url: URL(string: url)!, headers: HTTPHeaders([("Authorization" , "QBox " + authorization), ("Content-Type", "application/x-www-form-urlencoded")]), body: HTTPBody(string:"")), using: req)
+        return client.send(request).map { (response) -> UInt in
             print(response)
-            return response.http
+            return response.http.status.code
         }
     }
     
-    private func p_getAuthorization(urlString: String) -> String {
-        var signingStr = try HMAC.SHA1.authenticate(urlString, key: self.secretKey)
-        let encodedSign = sign.base64EncodedString().replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
+    private func p_getAuthorization(urlString: String) throws -> String {
+        let signingStr = try HMAC.SHA1.authenticate(urlString, key: self.secretKey)
+        let encodedSign = signingStr.base64EncodedString().replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
         let token = self.accessKey + ":" + encodedSign
         return token
     }
