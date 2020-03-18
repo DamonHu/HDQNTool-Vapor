@@ -7,6 +7,7 @@
 
 import Vapor
 import Crypto
+import Foundation
 
 public final class Res_QNDataConfig: Content {
     public var token = ""      //上传的token
@@ -24,13 +25,13 @@ public class HDQNTool {
     }
     
     @discardableResult
-    public func uploadFile(_ req: Request, fileName: String) throws -> Future<Res_QNDataConfig> {
+    public func uploadFile(_ req: Request, bucket: String, fileName: String) throws -> Future<Res_QNDataConfig> {
         //当前时间戳
         let currentTimeStamp : Int = Int(Date().timeIntervalSince1970)
         //默认4小时有效期
         let futureTimeStamp = currentTimeStamp + 3600
         //上传策略
-        let putPolicy = ["scope": "lazypigflarum:\(fileName)", "deadline": futureTimeStamp] as [String : Any]
+        let putPolicy = ["scope": "\(bucket):\(fileName)", "deadline": futureTimeStamp] as [String : Any]
         //base64编码
         let putPolicyJsonData = try JSONSerialization.data(withJSONObject: putPolicy)
         let encodedPutPolicy = putPolicyJsonData.base64EncodedString().replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
@@ -46,5 +47,30 @@ public class HDQNTool {
         res_QNDataConfig.token = uploadToken
         res_QNDataConfig.fileKey = fileName
         return req.future(res_QNDataConfig)
+    }
+    
+    @discardableResult
+    public func deleteFile(_ req: Request, bucket: String, fileName: String) throws -> Future<Int> {
+        let entry = "\(bucket):\(fileName)"
+        let entryData = entry.data(using: String.Encoding.utf8) ?? Data()
+        
+        let encodedEntryURI = entryData.base64EncodedString().replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
+        //发送删除请求
+        let url = "http://rs.qbox.me/delete/" + encodedEntryURI
+        let authorization = self.p_getAuthorization(urlString: "delete/" + encodedEntryURI)
+        
+        let client = try req.make(Client.self)
+        let request = Request(http: HTTPRequest(method: HTTPMethod.POST, url: URL(string: url)!, headers: HTTPHeaders([("Authorization" , "QBox " + authorization), ("Content-Type", "application/x-www-form-urlencoded")]), body: nil), using: req)
+        return client.send(request).map { (response) -> HTTPResponse in
+            print(response)
+            return response.http
+        }
+    }
+    
+    private func p_getAuthorization(urlString: String) -> String {
+        var signingStr = try HMAC.SHA1.authenticate(urlString, key: self.secretKey)
+        let encodedSign = sign.base64EncodedString().replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
+        let token = self.accessKey + ":" + encodedSign
+        return token
     }
 }
