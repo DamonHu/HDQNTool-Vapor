@@ -25,7 +25,7 @@ public class HDQNTool {
     }
     
     @discardableResult
-    public func uploadFile(_ req: Request, bucket: String, fileName: String) throws -> Future<Res_QNDataConfig> {
+    public func uploadFile(_ req: Request, bucket: String, fileName: String) throws -> EventLoopFuture<Res_QNDataConfig> {
         //当前时间戳
         let currentTimeStamp : Int = Int(Date().timeIntervalSince1970)
         //默认4小时有效期
@@ -50,7 +50,7 @@ public class HDQNTool {
     }
     
     @discardableResult
-    public func deleteFile(_ req: Request, bucket: String, fileName: String) throws -> Future<UInt> {
+    public func deleteFile(_ req: Request, bucket: String, fileName: String) throws -> EventLoopFuture<UInt> {
         let entry = "\(bucket):\(fileName)"
         let entryData = entry.data(using: String.Encoding.utf8) ?? Data()
         
