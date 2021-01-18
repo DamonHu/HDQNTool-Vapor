@@ -1,6 +1,6 @@
 ![](./cocoapodTool.png)
 
-# vapor-HDQNTool
+# VAPOR - HDQNTool
 
 Qiniu upload server sdk under vapor framework，vapor框架下的七牛上传服务器sdk
 
@@ -14,12 +14,12 @@ Qiniu upload server sdk under vapor framework，vapor框架下的七牛上传服
 
 可以采用SPM方式添加，也可以采用源文件方式添加
 
-### 1.1、SPM方式集成
+### vapor 3.0版本集成SPM方式集成
 
 在`Vapor`项目的`Package`文件中，在`dependencies`添加依赖
 
 ```
-.package(url: "https://github.com/DamonHu/vapor-HDQNTool.git", from: "1.1.0")
+.package(url: "https://github.com/DamonHu/HDQNTool.git", from: "1.0.0")
 ```
 
 在`targets`中添加
@@ -27,6 +27,24 @@ Qiniu upload server sdk under vapor framework，vapor框架下的七牛上传服
 ```
 .target(name: "App", dependencies: ["Vapor", "HDQNTool"]),
 ```
+
+### vapor 4.0版本集成SPM方式集成
+
+在`Vapor`项目的`Package`文件中，在`dependencies`添加依赖
+
+```
+.package(url: "https://github.com/DamonHu/HDQNTool.git", from: "4.0.0")
+```
+
+在`targets`中添加
+
+```
+.target(name: "App", dependencies: [
+            .product(name: "HDQNTool", package: "HDQNTool"),
+        ]),
+```
+
+
 ### 1.2、源文件方式添加
 
 将本git仓库里面的`Sources`目录下的`HDQNTool`整个文件夹拖入添加到工程即可
