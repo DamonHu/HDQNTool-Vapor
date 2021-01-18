@@ -23,7 +23,7 @@ let package = Package(
             .product(name: "Vapor", package: "vapor")
         ]),
         .testTarget(name: "HDQNToolTests", dependencies: [
-            .target(name: "App")
+            .product(name: "Vapor", package: "vapor")
         ]),
     ]
 )
