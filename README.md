@@ -19,7 +19,7 @@ Qiniu upload server sdk under vapor framework，vapor框架下的七牛上传服
 在`Vapor`项目的`Package`文件中，在`dependencies`添加依赖
 
 ```
-.package(url: "https://github.com/DamonHu/HDQNTool.git", from: "1.0.0")
+.package(url: "https://github.com/DamonHu/HDQNTool-Vapor.git", from: "1.0.0")
 ```
 
 在`targets`中添加
@@ -33,14 +33,14 @@ Qiniu upload server sdk under vapor framework，vapor框架下的七牛上传服
 在`Vapor`项目的`Package`文件中，在`dependencies`添加依赖
 
 ```
-.package(url: "https://github.com/DamonHu/HDQNTool.git", from: "4.0.0")
+.package(url: "https://github.com/DamonHu/HDQNTool-Vapor.git", from: "4.0.0")
 ```
 
 在`targets`中添加
 
 ```
 .target(name: "App", dependencies: [
-            .product(name: "HDQNTool", package: "HDQNTool"),
+            .product(name: "HDQNTool", package: "HDQNTool-Vapor"),
         ]),
 ```
 
